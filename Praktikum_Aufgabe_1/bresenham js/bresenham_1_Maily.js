@@ -26,27 +26,36 @@
 
 function drawLine(x0, y0, x1, y1){
   // 1. Oktant
-  let y = y1;
-  let a = y2 - y1;       // delta y
-  let b = -(x2 - x1);    // - delta x
+  // x nimmt zu, y nimmt ab
+  let y = y0;
+  let a = y1 - y0;       // delta y
+  let b = -(x1 - x0);    // -delta x
 
+  // Da im Canvas y nach unten zeigt, invertieren wir a -> siehe Hinweis in Praktikum Aufgabe
+  a = -a;
+
+  // Startwert (Fehlerwert)
   let Q_init = 2 * a + b;
   let Q = Q_init;
   let Q_step = 2 * (a + b);
   let Q_equal = 2 * a;
 
-  for (let x = x1; x <= x2; x++) {
-    setPixel(x, y);  
-    
+  // Von links nach rechts (x0 → x1)
+  for (let x = x0; x <= x1; x++) {
+    setPixel(x, y);  // Pixel setzen
+
+    // Entscheidung
     if (Q < 0) {
-      Q = Q + Q_equal; 
+      Q = Q + Q_equal;
     } else {
       Q = Q + Q_step;
-      y++;
+      y--;  // Y-Achse nach unten → Linie "nach oben"
     }
   }
-
 }
+
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
