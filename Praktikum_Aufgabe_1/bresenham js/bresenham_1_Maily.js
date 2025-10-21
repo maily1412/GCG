@@ -25,10 +25,28 @@
 
 
 function drawLine(x0, y0, x1, y1){
+  // 1. Oktant
+  let y = y1;
+  let a = y2 - y1;       // delta y
+  let b = -(x2 - x1);    // - delta x
 
+  let Q_init = 2 * a + b;
+  let Q = Q_init;
+  let Q_step = 2 * (a + b);
+  let Q_equal = 2 * a;
+
+  for (let x = x1; x <= x2; x++) {
+    setPixel(x, y);  
+    
+    if (Q < 0) {
+      Q = Q + Q_equal; 
+    } else {
+      Q = Q + Q_step;
+      y++;
+    }
+  }
 
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
