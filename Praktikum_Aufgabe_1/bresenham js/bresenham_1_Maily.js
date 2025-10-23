@@ -28,8 +28,8 @@ function drawLine(x0, y0, x1, y1){
   // 1. Oktant
   // x nimmt zu, y nimmt ab
   let y = y0;
-  let a = y1 - y0;       // delta y
-  let b = -(x1 - x0);    // -delta x
+  let a = dy;       // delta y
+  let b = -(dx);    // -delta x
 
   // Da im Canvas y nach unten zeigt, invertieren wir a -> siehe Hinweis in Praktikum Aufgabe
   a = -a;
