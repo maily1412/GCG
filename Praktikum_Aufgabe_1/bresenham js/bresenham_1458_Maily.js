@@ -25,92 +25,76 @@
 
 
 function drawLine(x0, y0, x1, y1){
-
   // nur postive Beträge -> wir wollen nur die Länge herausfinden, nicht die Richtung
-  
-  // Δx berechnen
   let dx = Math.abs(x1 - x0);
-
-  // Δy berechnen
   let dy = Math.abs(y1 - y0);
 
-  // Richtung bestimmen
-  // 1. Oktant (x,-y)   - rechts unten (Y-Achse im Fenster des Programms zeigt nach unten)
-  
-  // 4. Oktant (-x,-y)  - links unten
-  // 5. Oktant (-x,y)   - links oben  
-  // 8. Oktant (x,y)    - rechts oben 
+  // Richtung in x und y bestimmen
+  // entscheidet, in welchen der Oktanten 1, 4, 5 oder 8 wir uns befinden
 
-  // 2. Oktant (-y,x)   - gespiegelt von Oktant 1
-  // 3. Oktant (-y,-x)  - gespiegelt von Oktant 4 
-  // 6. Oktant (y,-x)   - gespiegelt von Oktant 5 
-  // 7. Oktant (y,x)    - gespiegelt von Oktant 8
-
-  // Kurzform: let schrittNachX = (x1 > x0) ? 1 : -1;
-  let schrittNachX;
+  let schrittNachX; // rechts (1,8) oder links (4,5)
   if (x1 > x0) {  
     schrittNachX = 1;   // Linie geht nach rechts
   } else {
     schrittNachX = -1;  // Linie geht nach links
   } 
 
-  // Kurzform: let schrittNachY = (y1 > y0) ? 1 : -1; 
-  let schrittNachY;
+  
+  let schrittNachY; // unten (4,8) oder oben (1,5)
   if (y1 > y0) {  
     schrittNachY = 1;   
   } else {
     schrittNachY = -1;  
   }
-  
 
-  // Startpunkt setzen
+  // Startpunkt
   let x = x0;
   let y = y0;
 
+  // Koeffizienten für den Bresenham-Algorithmus
+  let a = dy;       // Δy
+  let b = -dx;      // -Δx
 
-  // Entscheidung, ob Linie flach oder steil ist
-  if (dx >= dy) {
-    // flache Linie → x ist dominante Achse
-    let a = dy;       
-    let b = -dx;      
-  
-    let Q_init = 2 * a + b;
-    let Q = Q_init;
-    let Q_equal = 2 * a;
-    let Q_step = 2 * (a + b);
+  // Entscheidungsvariablen
+  let Q_init = 2 * a + b;
+  let Q = Q_init;
+  let Q_equal = 2 * a;
+  let Q_step = 2 * (a + b);
 
-    for (let i = 0; i <= dx; i++) {
-      setPixel(x, y); // Pixel setzen
+  // Schleife läuft über x -> flache Linien
+  for (let i = 0; i <= dx; i++) {
+    setPixel(x, y);
 
-      if (Q < 0) {
-        Q += Q_equal;
-      } else {
-        Q += Q_step;
-        y += schrittNachY; // Richtung in y (nach oben oder unten)
-      }
-      x += schrittNachX; // Richtung in x (nach links oder rechts)
+    // Entscheidung: y bleibt oder verändert sich um 1
+    if (Q < 0) {
+      Q += Q_equal; // y bleibt gleich
+    } else {
+      Q += Q_step;  // y ändert sich
+      y += schrittNachY;
     }
-  } else {
-    // steile Linie → y ist dominante Achse
-    let a = dx;       // Δx
-    let b = -dy;      // -Δy
-    let Q = 2 * a + b;
-    let Q_equal = 2 * a;
-    let Q_step = 2 * (a + b);
 
-    for (let i = 0; i <= dy; i++) {
-      setPixel(x, y); // Pixel setzen
-
-      if (Q < 0) {
-        Q += Q_equal;
-      } else {
-        Q += Q_step;
-        x += schrittNachX; // Richtung in x (nach links oder rechts)
-      }
-      y += schrittNachY; // Richtung in y (nach oben oder unten)
-    }
+    // x bewegt sich immer um 1 (nach links oder rechts)
+    x += schrittNachX;
   }
+
+  /* 
+    --- Kommentare für die 4 flachen Oktanten ---
+    
+    Oktant 1 (x, -y) → rechts oben
+      x1 > x0, y1 < y0  → schrittNachX = +1, schrittNachY = -1
+
+    Oktant 4 ( -x, -y ) → links oben
+      x1 < x0, y1 < y0  → schrittNachX = -1, schrittNachY = -1
+
+    Oktant 5 ( -x, y ) → links unten
+      x1 < x0, y1 > y0  → schrittNachX = -1, schrittNachY = +1
+
+    Oktant 8 ( x, y ) → rechts unten
+      x1 > x0, y1 > y0  → schrittNachX = +1, schrittNachY = +1
+  */
 }
+
+
 
 
 
