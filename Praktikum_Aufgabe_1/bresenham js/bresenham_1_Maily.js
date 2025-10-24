@@ -25,31 +25,34 @@
 
 
 function drawLine(x0, y0, x1, y1){
-  // 1. Oktant
-  // x nimmt zu, y nimmt ab
+
+  //Startpunkt der Linie
   let y = y0;
-  let a = dy;       // delta y
-  let b = -(dx);    // -delta x
 
-  // Da im Canvas y nach unten zeigt, invertieren wir a -> siehe Hinweis in Praktikum Aufgabe
-  a = -a;
+  //Konstanten berechnen 
+  let a = y1-y0;       // delta y
+  let b = -(x1-x0);    // -delta x
 
-  // Startwert (Fehlerwert)
+  a = -a; //y zeigt nach unten, deswegen invertieren wir a -> siehe Hinweis in Praktikum Aufgabe
+
+  //Entscheidungswert (Fehlerwert)
+  //Liegt die Linie über oder unter dem Mittelpunkt zwischen den beiden möglichen nächsten Pixeln?
   let Q_init = 2 * a + b;
   let Q = Q_init;
   let Q_step = 2 * (a + b);
   let Q_equal = 2 * a;
 
-  // Von links nach rechts (x0 → x1)
-  for (let x = x0; x <= x1; x++) {
-    setPixel(x, y);  // Pixel setzen
+  //Linie zeichnen
+  //Schleife durchläuft die Spalten (x-Richtung)
+  for (let x = x0; x <= x1; x++) {  //x wird immer um 1 erhöht, bis es den Endpunkt erreicht
+    setPixel(x, y);                 // Pixel setzen
 
-    // Entscheidung
-    if (Q < 0) {
-      Q = Q + Q_equal;
-    } else {
-      Q = Q + Q_step;
-      y--;  // Y-Achse nach unten → Linie "nach oben"
+    //Entscheidung y bleibt gleich oder verändert sich um 1
+    if (Q < 0) {        //Linie liegt unterhalb des Mittelpunkts
+      Q = Q + Q_equal;  //bleiben in der gleichen Zeile
+    } else {            //Linie liegt oberhalb oder auf dem Mittelpunkt
+      Q = Q + Q_step;   //eine Zeile nach oben
+      y--;              
     }
   }
 }

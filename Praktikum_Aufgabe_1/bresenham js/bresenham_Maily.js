@@ -26,91 +26,103 @@
 
 function drawLine(x0, y0, x1, y1){
 
-  // nur postive Beträge -> wir wollen nur die Länge herausfinden, nicht die Richtung
-  
-  // Δx berechnen
+  //Länge bestimmen 
   let dx = Math.abs(x1 - x0);
-
-  // Δy berechnen
   let dy = Math.abs(y1 - y0);
 
-  // Richtung bestimmen
-  // 1. Oktant (x,-y)   - rechts unten (Y-Achse im Fenster des Programms zeigt nach unten)
-  
-  // 4. Oktant (-x,-y)  - links unten
-  // 5. Oktant (-x,y)   - links oben  
-  // 8. Oktant (x,y)    - rechts oben 
-
-  // 2. Oktant (-y,x)   - gespiegelt von Oktant 1
-  // 3. Oktant (-y,-x)  - gespiegelt von Oktant 4 
-  // 6. Oktant (y,-x)   - gespiegelt von Oktant 5 
-  // 7. Oktant (y,x)    - gespiegelt von Oktant 8
-
-  // Kurzform: let schrittNachX = (x1 > x0) ? 1 : -1;
-  let schrittNachX;
-  if (x1 > x0) {  
+  //Richtung in x und y bestimmen
+  //Entscheidet, in welchen der 8 Oktanten sich die Linie befindet
+  let schrittNachX;     // rechts (1,2,7,8) oder links (3,4,5,6)
+  if (x1 > x0) {
     schrittNachX = 1;   // Linie geht nach rechts
   } else {
     schrittNachX = -1;  // Linie geht nach links
-  } 
-
-  // Kurzform: let schrittNachY = (y1 > y0) ? 1 : -1; 
-  let schrittNachY;
-  if (y1 > y0) {  
-    schrittNachY = 1;   
-  } else {
-    schrittNachY = -1;  
   }
-  
 
-  // Startpunkt setzen
+  let schrittNachY;     // unten (4,5,7,8) oder oben (1,2,3,6)
+  if (y1 > y0) {
+    schrittNachY = 1;   // Linie geht nach unten
+  } else {
+    schrittNachY = -1;  // Linie geht nach oben
+  }
+
+  //Startpunkt der Linie
   let x = x0;
   let y = y0;
 
+  //Entscheidung, ob flache oder steile Linie
+  if (dx >= dy) { //Fall 1: Linie flach 
 
-  // Entscheidung, ob Linie flach oder steil ist
-  if (dx >= dy) {
-    // flache Linie → x ist dominante Achse
+    //Koeffizienten für flache Linien (x-dominant)
     let a = dy;       
     let b = -dx;      
-  
+
+    //Entscheidungswert (Fehlerwert)
+    //Liegt die Linie über oder unter dem Mittelpunkt zwischen den beiden möglichen nächsten Pixeln?
     let Q_init = 2 * a + b;
     let Q = Q_init;
     let Q_equal = 2 * a;
     let Q_step = 2 * (a + b);
 
-    for (let i = 0; i <= dx; i++) {
-      setPixel(x, y); // Pixel setzen
+    //Linie zeichnen
+    //Schleife durchläuft die Spalten (x-Richtung)
+    for (let i = 0; i <= dx; i++) {      // x wird immer um 1 erhöht oder verringert, bis der Endpunkt erreicht ist
+      setPixel(x, y);                    // Pixel setzen
 
-      if (Q < 0) {
-        Q += Q_equal;
-      } else {
-        Q += Q_step;
-        y += schrittNachY; // Richtung in y (nach oben oder unten)
+      //Entscheidung: y bleibt gleich oder verändert sich um 1
+      if (Q < 0) {                       // Linie liegt unterhalb des Mittelpunkts
+        Q = Q + Q_equal;                 // bleiben in der gleichen Zeile
+      } else {                           // Linie liegt oberhalb oder auf dem Mittelpunkt
+        Q = Q + Q_step;                  
+        y = y + schrittNachY;            // y verändert sich um 1 in Richtung schrittNachY
       }
-      x += schrittNachX; // Richtung in x (nach links oder rechts)
+
+      x = x + schrittNachX;              // x bewegt sich in Richtung schrittNachX
     }
-  } else {
-    // steile Linie → y ist dominante Achse
-    let a = dx;       // Δx
-    let b = -dy;      // -Δy
-    let Q = 2 * a + b;
+
+  } else {  //Fall 2: Linie steil
+
+    //Koeffizienten für steile Linien (y-dominant)
+    let a = dx;       
+    let b = -dy;      
+
+    //Entscheidungswert (Fehlerwert)
+    let Q_init = 2 * a + b;
+    let Q = Q_init;
     let Q_equal = 2 * a;
     let Q_step = 2 * (a + b);
 
-    for (let i = 0; i <= dy; i++) {
-      setPixel(x, y); // Pixel setzen
+    //Linie zeichnen
+    //Schleife durchläuft die Zeilen (y-Richtung)
+    for (let i = 0; i <= dy; i++) {      //y wird immer um 1 erhöht oder verringert, bis der Endpunkt erreicht ist
+      setPixel(x, y);                    //Pixel setzen
 
-      if (Q < 0) {
-        Q += Q_equal;
-      } else {
-        Q += Q_step;
-        x += schrittNachX; // Richtung in x (nach links oder rechts)
+      //Entscheidung: x bleibt gleich oder verändert sich um 1
+      if (Q < 0) {                       //Linie liegt unterhalb des Mittelpunkts
+        Q = Q + Q_equal;                 //bleiben in der gleichen Spalte
+      } else {                           //Linie liegt oberhalb oder auf dem Mittelpunkt
+        Q = Q + Q_step;                  
+        x = x + schrittNachX;            //x verändert sich um 1 in Richtung schrittNachX
       }
-      y += schrittNachY; // Richtung in y (nach oben oder unten)
+
+      y = y + schrittNachY;              //y bewegt sich in Richtung schrittNachY
     }
   }
 }
+
+ /**
+  * Richtung bestimmen
+  * 1. Oktant (x,-y)   - rechts unten (Y-Achse im Fenster des Programms zeigt nach unten)
+  * 4. Oktant (-x,-y)  - links unten
+  * 5. Oktant (-x,y)   - links oben  
+  * 8. Oktant (x,y)    - rechts oben 
+  * 
+  * 2. Oktant (-y,x)   - gespiegelt von Oktant 1
+  * 3. Oktant (-y,-x)  - gespiegelt von Oktant 4 
+  * 6. Oktant (y,-x)   - gespiegelt von Oktant 5 
+  * 7. Oktant (y,x)    - gespiegelt von Oktant 8
+  */ 
+  
 
 
 
