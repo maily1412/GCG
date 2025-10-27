@@ -43,10 +43,10 @@ function drawLine(x0, y0, x1, y1){
     setPixel (x,y);
     // Entscheidung y bleibt gleich oder verändert sich um 1
     if (q < 0){         
-      q += q_equal;                    
+      q += q_equal;   //Linie bleibt in der gleichen Zeile               
     } else{             
-      q += q_step;   
-      y--;              // y-Achse zeigt nach unten, daher y dekrementieren
+      q += q_step;    //Linie wechselt zur nächsten Zeile
+      y--;            // y-Achse zeigt nach unten, daher y dekrementieren
     }
   }
 }

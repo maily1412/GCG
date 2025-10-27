@@ -22,6 +22,12 @@
 // Implementieren Sie dazu den Bresenham-Line-Algorithmus für alle Oktanten
 // in dieser Funktion. Einen Punkt zeichnen Sie mit setPixel(x,y).
 ////////////////////////////////////////////////////////////////////////////////
+
+// Oktant 1: deltaX > 0, deltaY < 0
+// Oktant 4: deltaX < 0, deltaY < 0
+// Oktant 5: deltaX < 0, deltaY > 0
+// Oktant 8: deltaX > 0, deltaY > 0
+
 function drawLine(x0, y0, x1, y1){
   let x = x0;
   let y = y0;
@@ -64,9 +70,9 @@ function drawLine(x0, y0, x1, y1){
     setPixel (x,y);
     // Entscheidung y bleibt gleich oder verändert sich um 1
     if (q < 0){         
-      q += q_equal;  
+      q += q_equal;             //Linie bleibt in der gleichen Zeile
     } else{                     
-      q += q_step;           
+      q += q_step;              //Linie wechselt zur nächsten Zeile
       y += schrittInYRichtung;  //eine Zeile nach oben oder unten, je nach schrittInYRichtung
     }
     x += schrittInXRichtung;    //eine Spalte nach rechts oder links, je nach schrittInXRichtung

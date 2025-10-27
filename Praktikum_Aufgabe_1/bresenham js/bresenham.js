@@ -22,6 +22,16 @@
 // Implementieren Sie dazu den Bresenham-Line-Algorithmus für alle Oktanten
 // in dieser Funktion. Einen Punkt zeichnen Sie mit setPixel(x,y).
 ////////////////////////////////////////////////////////////////////////////////
+
+// Oktant 1: deltaX > 0, deltaY < 0 und |deltaX| > |deltaY|   -> rechts oben (flach)
+// Oktant 2: deltaX > 0, deltaY < 0 und |deltaX| < |deltaY|   -> rechts oben (steil)
+// Oktant 3: deltaX < 0, deltaY < 0 und |deltaX| < |deltaY|   -> links oben (steil)
+// Oktant 4: deltaX < 0, deltaY < 0 und |deltaX| > |deltaY|   -> links oben (flach)
+// Oktant 5: deltaX < 0, deltaY > 0 und |deltaX| > |deltaY|   -> links unten (flach)
+// Oktant 6: deltaX < 0, deltaY > 0 und |deltaX| < |deltaY|   -> links unten (steil)
+// Oktant 7: deltaX > 0, deltaY > 0 und |deltaX| < |deltaY|   -> rechts unten (steil)
+// Oktant 8: deltaX > 0, deltaY > 0 und |deltaX| > |deltaY|   -> rechts unten (flach)
+
 function drawLine(x0, y0, x1, y1){
   let x = x0;
   let y = y0;
@@ -50,26 +60,50 @@ function drawLine(x0, y0, x1, y1){
   deltaX = Math.abs(deltaX);   
   deltaY = Math.abs(deltaY);   
 
-  let a = deltaY;   // hier wird deltaY nicht mehr negiert, da wir mit absoluten Beträgen arbeiten
-  let b = -deltaX;
-  
-  // Entscheidungswert (Fehlerwert)
-  let q_init = 2 * a + b;   // Startwert von q
-  let q_step = 2 * (a + b); // Änderung von q, wenn y erhöht wird 
-  let q_equal = 2 * a;      // Änderung von q, wenn y gleich bleibt
-  let q = q_init;           // aktueller Wert von q
+  //Entscheidung, ob flache oder steile Linie
+  if(deltaX >= deltaY){  //x steigt schneller als y --> Linie flach 
+    let a = deltaY;  
+    let b = -deltaX;
+    
+    // Entscheidungswert (Fehlerwert)
+    let q_init = 2 * a + b;   // Startwert von q
+    let q_step = 2 * (a + b); // Änderung von q, wenn y erhöht wird 
+    let q_equal = 2 * a;      // Änderung von q, wenn y gleich bleibt
+    let q = q_init;           // aktueller Wert von q
 
-  // Linie zeichnen
-  for (let i = 0; i <= deltaX; i++){ // Schleife läuft über alle Pixel in x-Richtung
-    setPixel (x,y);
-    // Entscheidung y bleibt gleich oder verändert sich um 1
-    if (q < 0){         
-      q += q_equal;  
-    } else{                     
-      q += q_step;           
-      y += schrittInYRichtung;  //eine Zeile nach oben oder unten, je nach schrittInYRichtung
+    // Linie zeichnen
+    for (let i = 0; i <= deltaX; i++){ // Schleife läuft über alle Pixel in x-Richtung
+      setPixel (x,y);
+      // Entscheidung y bleibt gleich oder verändert sich um 1
+      if (q < 0){         
+        q += q_equal;             //Linie bleibt in der gleichen Zeile
+      } else{                     
+        q += q_step;              //Linie wechselt zur nächsten Zeile
+        y += schrittInYRichtung;  //eine Zeile nach oben oder unten, je nach schrittInYRichtung
+      }
+      x += schrittInXRichtung;    //eine Spalte nach rechts oder links, je nach schrittInXRichtung
     }
-    x += schrittInXRichtung;    //eine Spalte nach rechts oder links, je nach schrittInXRichtung
+  } else{   //y steigt schneller als x --> Linie steil, daher a und b vertauschen
+    let a = deltaX;   
+    let b = -deltaY;  
+    
+    // Entscheidungswert (Fehlerwert)
+    let q_init = 2 * a + b;   // Startwert von q
+    let q_step = 2 * (a + b); // Änderung von q, wenn y erhöht wird 
+    let q_equal = 2 * a;      // Änderung von q, wenn y gleich bleibt
+    let q = q_init;           // aktueller Wert von q
+    
+    for (let i = 0; i <= deltaY; i++){ // Schleife läuft über alle Pixel in y-Richtung
+      setPixel (x,y);
+      //Entscheidung x bleibt gleich oder verändert sich um 1
+      if (q < 0){                 
+        q += q_equal;          //Linie bleibt in der gleichen Spalte
+      } else{                     
+        q += q_step;           //Linie wechselt zur nächsten Spalte
+        x += schrittInXRichtung;  //eine Spalte nach rechts oder links, je nach schrittInXRichtung
+      }
+      y += schrittInYRichtung;    //eine Zeile nach oben oder unten, je nach schrittInYRichtung
+    }
   }
 }
 
