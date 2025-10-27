@@ -29,29 +29,8 @@ function drawLine(x0, y0, x1, y1){
   let deltaX = x1 - x0; // horizontale Differenz
   let deltaY = y1 - y0; // vertikale Differenz
 
-  // Wir bestimmen zuerst, in welche Richtung die Linie verläuft:
-  // nach rechts oder nach links (x-Richtung)
-  let schrittInXRichtung;
-  if (deltaX > 0){            
-    schrittInXRichtung = 1;   // Linie geht nach rechts
-  } else{                     
-    schrittInXRichtung = -1;  // Linie geht nach links
-  }
-
-  // nach unten oder nach oben (y-Richtung) 
-  let schrittInYRichtung;
-  if (deltaY > 0){             
-    schrittInYRichtung = 1;    // Linie geht nach unten
-  } else{                      
-    schrittInYRichtung = -1;   // Linie geht nach oben
-  }
-
-  // Länge 
-  deltaX = Math.abs(deltaX);   
-  deltaY = Math.abs(deltaY);   
-
-  let a = deltaY;   // hier wird deltaY nicht mehr negiert, da wir mit absoluten Beträgen arbeiten
-  let b = -deltaX;
+  let a = -deltaY; // hier wird deltaY negiert, da y-Wert nach oben hin negativ wird (y-Achse zeigt nach unten)
+  let b = -deltaX; 
   
   // Entscheidungswert (Fehlerwert)
   let q_init = 2 * a + b;   // Startwert von q
@@ -60,16 +39,15 @@ function drawLine(x0, y0, x1, y1){
   let q = q_init;           // aktueller Wert von q
 
   // Linie zeichnen
-  for (let i = 0; i <= deltaX; i++){ // Schleife läuft über alle Pixel in x-Richtung
+  for (x; x <= x1; x++){ // x wird immer um 1 erhöht, bis es den Endpunkt erreicht
     setPixel (x,y);
     // Entscheidung y bleibt gleich oder verändert sich um 1
     if (q < 0){         
-      q += q_equal;  
-    } else{                     
-      q += q_step;           
-      y += schrittInYRichtung;  //eine Zeile nach oben oder unten, je nach schrittInYRichtung
+      q += q_equal;                    
+    } else{             
+      q += q_step;   
+      y--;              // y-Achse zeigt nach unten, daher y dekrementieren
     }
-    x += schrittInXRichtung;    //eine Spalte nach rechts oder links, je nach schrittInXRichtung
   }
 }
 

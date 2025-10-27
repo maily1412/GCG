@@ -32,12 +32,7 @@ function drawLine(x0, y0, x1, y1) {
 
   //Richtung in x und y bestimmen
   //Entscheidet, in welchen der Oktanten (1, 4, 5 oder 8) die Linie liegt
-  let schrittNachX;     // rechts (1,8) oder links (4,5)
-  if (x1 > x0) {
-    schrittNachX = 1;   // Linie geht nach rechts
-  } else {
-    schrittNachX = -1;  // Linie geht nach links
-  }
+  let schrittNachX = berechneSchrittNachX(x1, x0);
 
   let schrittNachY; // unten (4,8) oder oben (1,5)
   if (y1 > y0) {
@@ -97,6 +92,16 @@ function drawLine(x0, y0, x1, y1) {
 
 
 
+
+function berechneSchrittNachX(x1, x0) {
+  let schrittNachX; // rechts (1,8) oder links (4,5)
+  if (x1 > x0) {
+    schrittNachX = 1; // Linie geht nach rechts
+  } else {
+    schrittNachX = -1; // Linie geht nach links
+  }
+  return schrittNachX;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // example(i)
