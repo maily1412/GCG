@@ -5,9 +5,13 @@
 //
 // HS Duesseldorf - Fachbereich Medien - Grundlagen der Computergrafik
 //
-// Studiengang  :
-// Autor        :
-//...
+// Studiengang: BMI
+// Gruppe     : K
+// Autor 1    : Mai Ly Le
+// Autor 2    : Emma Damm
+// Autor 3    : Daniela Janjic
+// Autor 4    : Xiaojie Chen
+// Autor 5    : Sara Saeid
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -28,7 +32,7 @@ function animateA(time)
                                  0.0, 0.0, 0.0, 1.0);
   
   // TODO: Implementieren Sie die Berechnung der Transformationsmatrizen
-  
+
   return {
     "pointMatrix" : pointMatrix,
     "normalMatrix" : normalMatrix
