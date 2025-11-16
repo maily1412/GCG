@@ -5,15 +5,86 @@
 //
 // HS Duesseldorf - Fachbereich Medien - Grundlagen der Computergrafik
 //
-// Studiengang  : BMI
-// Autor        :
-//...
+// Studiengang: BMI
+// Gruppe     : K
+// Autor 1    : Mai Ly Le
+// Autor 2    : Emma Damm
+// Autor 3    : Daniela Janjic
+// Autor 4    : Xiaojie Chen
+// Autor 5    : Sara Saeid
 ////////////////////////////////////////////////////////////////////////////////
 
+//Methoden für Matrizen
 
-//1. Zahnrad A animieren
-//Animieren Sie Zahnrad A so, dass es sich um seine Achse mit z.B. einer zehntel Umdrehung pro Sekunde dreht. Stellen Sie sicher, dass die Beleuchtung korrekt berechnet werden kann.
-//Hinweis: Der Mittelpunkt von Zahnrad A befindet sich ohne Transformation an der Position (20; 10; 0).
+//2D-Translation
+/**
+ * Erstellt eine Matrix für eine 2D-Translation.
+ * @param {number} verschiebungInXRichtung 
+ * @param {number} verschiebungInYRichtung 
+ * @returns 2D-Translationsmatrix
+ */
+function translationsMatrix2D(verschiebungInXRichtung, verschiebungInYRichtung){
+    return new Matrix4 (1.0, 0.0, 0.0, verschiebungInXRichtung,
+                        0.0, 1.0, 0.0, verschiebungInYRichtung,
+                        0.0, 0.0, 1.0, 1.0,
+                        0.0, 0.0, 0.0, 1.0);
+}
+
+//2D-Rotation
+/**
+ * Erstellt eine Matrix für eine 2D-Rotation.
+ * @param {number} winkel um den rotiert werden soll
+ * @returns 2D-Rotationsmatrix
+ */
+function rotationsMatrix2D(winkel){
+    return new Matrix4 (Math.cos(winkel), -Math.sin(winkel), 0.0, 0.0,
+                        Math.sin(winkel), Math.cos(winkel), 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0);
+}
+
+//2D-Skalierung
+/**
+ * Erstellt eine Matrix für eine 2D-Skalierung.
+ * @param {number} skalierungInXRichtung 
+ * @param {number} skalierungInYRichtung 
+ * @returns 2D-Skalierungsmatrix
+ */
+function skalierungsMatrixPoints2D(skalierungInXRichtung, skalierungInYRichtung){
+    return new Matrix4 (skalierungInXRichtung, 0.0, 0.0, 0.0,
+                        0.0, skalierungInYRichtung, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0);
+}
+
+
+//Definitionen für Umdrehung
+
+//eine Umdrehung hat 360°, es soll eine Zehntel Umdrehung pro Sekunde erfolgen
+//Einheit: °/s
+const zehntelUmdrehung = 360 / 10;
+
+/**
+ * Rechnet Grad in Radiant um.
+ * @param {number} grad der umgerechnet werden soll
+ * @returns radiant zum grad
+ */
+function radiant(grad){
+  return grad * (Math.PI/180);
+}
+
+/**
+ * Gibt einen Winkel, der von der Zeit (zehntel Umdrehung pro Sekunde) abhängig ist, als Radiant zurück, sodasss er in sin und cos verwendet werden kann.
+ * Einheitencheck: s * °/s = °, und dann ° in rad
+ * @param {number} faktor mit dem multipliziert werden muss, je nachdem wie schnell die Umdrehung erfolgen soll
+ * @param {*} zeit von der der Winkel abhängig ist
+ * @returns Zeitabhängigerwinkel als Radiant
+ */
+function zeitabhaengigerWinkel(faktor, zeit){
+  return radiant(faktor * zeit * zehntelUmdrehung);
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Gibt die Transformation von Zahnrad A abhängig von der Zeit (time) zurück
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,33 +104,19 @@ function animateA(time)
   
   //Zahnrad in den Ursprung verschieben
     //Mittelpunkt (20; 10; 0) zu (0; 0; 0)
-    //Verschiebungsvektor: (-20
-    //                      -10
-    //                       1)
-  let translationInUrsprung = new Matrix4(1.0, 0.0, 0.0, -20.0,
-                                          0.0, 1.0, 0.0, -10.0,
-                                          0.0, 0.0, 1.0, 1.0,
-                                          0.0, 0.0, 0.0, 1.0);
+    //verschiebungInXRichtung: -20, verschiebungInYRichtung: -10
+  let translationInUrsprung = translationsMatrix2D(-20, -10);
+
+
   //Zahnrad rotieren
-    //zehntel Umdrehung pro Sekunde --> 360° : 10 = 36°
-    let zehntelUmdrehung = 360 / 10;
-    let zeitabhaengigerWinkel = time * zehntelUmdrehung * (Math.PI/180);
-    let cos = Math.cos(zeitabhaengigerWinkel);
-    let sin = Math.sin(zeitabhaengigerWinkel);
-    //Rotationsmatrix = (cos(a), -sin(a), 0, 0,
-    //                   sin(a),  cos(a), 0, 0,
-    //                   0,       0,      1, 0,
-    //                   0,       0,      0, 1)
-  let zahnradRotation = new Matrix4(cos, -sin, 0.0, 0.0,
-                                    sin, cos, 0.0, 0.0,
-                                    0.0, 0.0, 1.0, 0.0,
-                                    0.0, 0.0, 0.0, 1.0);
+    //zeitabhängigerWinkel mit Faktor 1, da Zahnrad A das Rad sein soll, dass sich tatsächlich ein Zehntel pro Sekunde dreht
+  let zeitabhaengigerWinkelA = zeitabhaengigerWinkel(1, time);
+  
+  let zahnradRotation = rotationsMatrix2D(zeitabhaengigerWinkelA);
   
   //Zahnrad zurück an eigentliche Position verschieben
-  let tranlationZurueck = new Matrix4(1.0, 0.0, 0.0, 20.0,
-                                      0.0, 1.0, 0.0, 10.0,
-                                      0.0, 0.0, 1.0, 1.0,
-                                      0.0, 0.0, 0.0, 1.0);
+  let tranlationZurueck = translationsMatrix2D(20, 10);
+
   //Matrizen in umgekehrter Richtung multiplizieren
   pointMatrix.multiply(tranlationZurueck.multiply(zahnradRotation.multiply(translationInUrsprung)));
 
@@ -72,10 +129,6 @@ function animateA(time)
 }
 
 
-//Methode für Matrizen aulagern... Parameter Rotation --> Winkel, Parameter Translation --> x,y...
-//2. Zahnrad B animieren
-//Animieren Sie Zahnrad B so, dass es sich um seine Achse dreht und korrekt in Zahnrad A greift. Stellen Sie sicher, dass die Beleuchtung korrekt berechnet werden kann.
-//Hinweis: Der Mittelpunkt von Zahnrad B befindet sich ohne Transformation an der Position (47; 2; 0).
 ////////////////////////////////////////////////////////////////////////////////
 // Gibt die Transformation von Zahnrad B abhängig von der Zeit (time) zurück
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,37 +148,19 @@ function animateB(time)
   
   //Zahnrad in den Ursprung verschieben
     //Mittelpunkt (47; 2; 0) zu (0; 0; 0)
-    //Verschiebungsvektor: (-47
-    //                      -2
-    //                       1)
-  let translationInUrsprung = new Matrix4(1.0, 0.0, 0.0, -47.0,
-                                          0.0, 1.0, 0.0, -2.0,
-                                          0.0, 0.0, 1.0, 1.0,
-                                          0.0, 0.0, 0.0, 1.0);
+    //verschiebungInXRichtung: -47, verschiebungInYRichtung: -2
+  let translationInUrsprung = translationsMatrix2D(-47, -2);
 
   //Zahnrad rotieren
-    //zehntel Umdrehung pro Sekunde --> 360° : 10 = 36°
+    //zeitabhängigerWinkel mit Faktor 2, da Zahnrad B (9 Zacken) halb so groß wie Rad A (18 Zacken) ist und sich daher doppelt so schnell drehen muss
     //hier negativ, da Zahnrad in andere Richtung drehen muss
-    //mal 2, da halb so viele Zacken, wie bei Zahnrad A und daher doppelt so schnell
-    let zehntelUmdrehung = -(360 / 10) * 2;
-    let zeitabhaengigerWinkel = time * zehntelUmdrehung * (Math.PI/180);
-    let cos = Math.cos(zeitabhaengigerWinkel);
-    let sin = Math.sin(zeitabhaengigerWinkel);
-    //Rotationsmatrix = (cos(a), -sin(a), 0, 0,
-    //                   sin(a),  cos(a), 0, 0,
-    //                   0,       0,      1, 0,
-    //                   0,       0,      0, 1)
-  let zahnradRotation = new Matrix4(cos, -sin, 0.0, 0.0,
-                                    sin, cos, 0.0, 0.0,
-                                    0.0, 0.0, 1.0, 0.0,
-                                    0.0, 0.0, 0.0, 1.0);
+  let zeitabhaengigerWinkelB = - zeitabhaengigerWinkel(2, time);
+
+  let zahnradRotation = rotationsMatrix2D(zeitabhaengigerWinkelB);
   
   
   //Zahnrad zurück an eigentliche Position verschieben
-  let tranlationZurueck = new Matrix4(1.0, 0.0, 0.0, 47.0,
-                                      0.0, 1.0, 0.0, 2.0,
-                                      0.0, 0.0, 1.0, 1.0,
-                                      0.0, 0.0, 0.0, 1.0);
+  let tranlationZurueck = translationsMatrix2D(47, 2);
 
   //Matrizen in umgekehrter Richtung multiplizieren
   pointMatrix.multiply(tranlationZurueck.multiply(zahnradRotation.multiply(translationInUrsprung)));
@@ -163,12 +198,10 @@ function animateC(time)
   
   //Zahnrad zuerst skalieren, da es sich bereits im Ursprung befindet
   //Zahnrad hat vorher ein Zehntel des benötigten Durchmessers, aber richtige Dicke, also nur in x- und y-Richtung skalieren
-  let zahnradSkalieren = new Matrix4(10.0, 0.0, 0.0, 0.0,
-                                     0.0, 10.0, 0.0, 0.0,
-                                     0.0, 0.0, 1.0, 0.0,
-                                     0.0, 0.0, 0.0, 1.0);
+  let zahnradSkalieren = skalierungsMatrixPoints2D(10, 10);
 
-  //bei Skalierung Normalen getrennt behandeln
+  //bei Skalierung Normalen getrennt behandeln, Inverse bilden
+  //hier Transponieren nicht notwendig, da transponierte Matrix gleich der nicht transponierten ist
   let normalenSkalieren = new Matrix4(0.1, 0.0, 0.0, 0.0,
                                      0.0, 0.1, 0.0, 0.0,
                                      0.0, 0.0, 1.0, 0.0,
@@ -176,31 +209,16 @@ function animateC(time)
 
 
   //Zahnrad rotieren
-    //zehntel Umdrehung pro Sekunde --> 360° : 10 = 36°
+    //zeitabhängigerWinkel mit Faktor 3/2, da Zahnrad C (12 Zacken) 2/3 so groß wie Rad A (18 Zacken) ist und sich daher 3/2 so schnell drehen muss
     //hier wieder positiv, da Zahnrad in andere Richtung drehen muss als Zahnrad B
+  let zeitabhaengigerWinkelC = zeitabhaengigerWinkel(3/2, time);
     
-  let zehntelUmdrehung = (360 / 10) * (3/2);
-  let zeitabhaengigerWinkel = time * zehntelUmdrehung * (Math.PI/180);
-  let cos = Math.cos(zeitabhaengigerWinkel);
-  let sin = Math.sin(zeitabhaengigerWinkel);
-    //Rotationsmatrix = (cos(a), -sin(a), 0, 0,
-    //                   sin(a),  cos(a), 0, 0,
-    //                   0,       0,      1, 0,
-    //                   0,       0,      0, 1)
-  let zahnradRotation = new Matrix4(cos, -sin, 0.0, 0.0,
-                                    sin, cos, 0.0, 0.0,
-                                    0.0, 0.0, 1.0, 0.0,
-                                    0.0, 0.0, 0.0, 1.0);
+  let zahnradRotation = rotationsMatrix2D(zeitabhaengigerWinkelC);
  
   //Zahnrad an Endposition verschieben
     //Mittelpunkt (0; 0; 0) zu (67; 14; 0)
-    //Verschiebungsvektor: (67
-    //                      14
-    //                       1)
-  let zahnradVerschieben = new Matrix4(1.0, 0.0, 0.0, 67.0,
-                                      0.0, 1.0, 0.0, 14.0,
-                                      0.0, 0.0, 1.0, 1.0,
-                                      0.0, 0.0, 0.0, 1.0);
+    //verschiebungInXRichtung: 67, verschiebungInYRichtung: 14
+  let zahnradVerschieben = translationsMatrix2D(67, 14); 
 
   //zweimal zahnradRotation benötigt, einmal für pointMatrix und einmal für normalMatrix, deshalb klonen
   let normalRotation = zahnradRotation.clone();
