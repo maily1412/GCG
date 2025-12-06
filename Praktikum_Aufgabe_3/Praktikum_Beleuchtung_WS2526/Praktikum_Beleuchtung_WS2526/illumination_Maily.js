@@ -86,7 +86,7 @@ function phong(position, normal, camPosition)
 
   // Beurteilung: Kugel ist gleichmäßig schwach ausgeleuchtet. Egal wie man ihn dreht, er hat überall denselben Helligkeitswert
 
-  
+
   // alle Punktlichter werden mit der Schleife berücksichtigt
   for (let i = 0; i < lights.length; i++) {
 
@@ -128,7 +128,7 @@ function phong(position, normal, camPosition)
   // Skalarprodukt
   let dotVR = V.dot(R);
   // setzen negative Werte auf 0, da nur reflektiertes Licht sichtbar ist (wichtig für Glanzpunkt)
-  if (dotVR < 0) dotVR = 0; 
+  if (dotVR < 0) dotVR = 0;
 
   // Spekularfaktor
   let specularFactor = Math.pow(dotVR, shininess); // berechnet die Stärke des Glanzpunkts: (V·R)^n verstärkt hohe Werte und macht den Glanzpunkt kleiner und schärfer je höher der Shininess-Wert ist
