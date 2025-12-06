@@ -5,13 +5,13 @@
 //
 // HS Duesseldorf - Fachbereich Medien - Grundlagen d. Computergrafik
 //
-// Studiengang:
-// Gruppe     :
-// Autor 1    :
-// Autor 2    :
-// Autor 3    :
-// Autor 4    :
-// Autor 5    :
+// Studiengang: BMI
+// Gruppe     : K
+// Autor 1    : Mai Ly Le
+// Autor 2    : Emma Damm
+// Autor 3    : Daniela Janjic
+// Autor 4    : Xiaojie Chen
+// Autor 5    : Sara Saeid
 ////////////////////////////////////////////////////////////////////////////////
 
 
