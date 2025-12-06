@@ -18,7 +18,7 @@
 // das ambiente Licht (Ia)
 let ambientLight = {intensity: {r: 0.125, g: 0.125, b: 0.125}};
 
-// alle übrigen (Punkt)-Lichter der Szene
+// alle (Punkt)-Lichter der Szene
 let lights = [
   {position: new THREE.Vector3(-100, 100, 75),
   intensity: {r: 0.875, g: 0.625, b: 0.125}}, //orange
