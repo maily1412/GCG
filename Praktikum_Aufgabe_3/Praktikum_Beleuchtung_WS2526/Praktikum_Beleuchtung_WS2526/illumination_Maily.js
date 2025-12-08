@@ -26,11 +26,11 @@ let lights = [
   {position: new THREE.Vector3(120, 100, -60),
   intensity: { r: 0.857, g: 0.214, b: 0.345 }}, // rot
 
-  {position: new THREE.Vector3(0, -100, -20),
-  intensity: { r: 0.354, g: 0.777, b: 0.201 }}, // grün
+  //{position: new THREE.Vector3(0, -100, -20),
+  //intensity: { r: 0.354, g: 0.777, b: 0.201 }}, // grün
 
-  {position: new THREE.Vector3(0, 0, 150),
-  intensity: { r: 0.8, g: 0.0, b: 0.9 }}, // lila
+  //{position: new THREE.Vector3(0, 0, 150),
+  //intensity: { r: 0.8, g: 0.0, b: 0.9 }}, // lila
 
   {position: new THREE.Vector3(0, 0, -150),
   intensity: { r: 0.1, g: 0.0, b: 0.9 }}, // blau
@@ -38,13 +38,13 @@ let lights = [
 ];
 
 // ambienter Reflektionskoeff. Material (0,…,1) r,g,b (ka)
-let ambientReflectionCoefficient = {r: 1.0, g: 1.0, b: 1.0};
+let k_a = {r: 1.0, g: 1.0, b: 1.0};
 
 // diffuser Reflexionskoeffizient (kd)
-let diffuseReflectionCoefficient = {r: 1.0, g: 1.0, b: 1.0};
+let k_d = {r: 1.0, g: 1.0, b: 1.0};
 
 // spekularer Reflexionskoeffizient (ks)
-let specularReflectionCoefficient = { r: 1.0, g: 1.0, b: 1.0 };
+let k_s = { r: 1.0, g: 1.0, b: 1.0 };
 
 // Highlight des Glanzes
 let shininess = 20.0;
@@ -80,9 +80,9 @@ function phong(position, normal, camPosition)
   
   // Ambienter Anteil berechnen: ia = Ia * ka
 
-  outColor.r = ambientLight.intensity.r * ambientReflectionCoefficient.r;
-  outColor.g = ambientLight.intensity.g * ambientReflectionCoefficient.g;
-  outColor.b = ambientLight.intensity.b * ambientReflectionCoefficient.b;
+  outColor.r = ambientLight.intensity.r * k_a.r;
+  outColor.g = ambientLight.intensity.g * k_a.g;
+  outColor.b = ambientLight.intensity.b * k_a.b;
 
   // Beurteilung: Kugel ist gleichmäßig schwach ausgeleuchtet. Egal wie man ihn dreht, er hat überall denselben Helligkeitswert
 
@@ -109,9 +109,9 @@ function phong(position, normal, camPosition)
   if (dotNL < 0) dotNL = 0;
 
   // id = Ip * kd * max(N⋅L)
-  outColor.r += light.intensity.r * diffuseReflectionCoefficient.r * dotNL;
-  outColor.g += light.intensity.g * diffuseReflectionCoefficient.g * dotNL;
-  outColor.b += light.intensity.b * diffuseReflectionCoefficient.b * dotNL;
+  outColor.r += light.intensity.r * k_d.r * dotNL;
+  outColor.g += light.intensity.g * k_d.g * dotNL;
+  outColor.b += light.intensity.b * k_d.b * dotNL;
   
   // Beurteilung: Man sieht jetzt eine Lichtseite und eine Schattenseite. Die Helligkeit ist auf die Beleuchtung angepasst.
 
@@ -134,9 +134,9 @@ function phong(position, normal, camPosition)
   let specularFactor = Math.pow(dotVR, shininess); // berechnet die Stärke des Glanzpunkts: (V·R)^n verstärkt hohe Werte und macht den Glanzpunkt kleiner und schärfer je höher der Shininess-Wert ist
 
   // is= Ip * ks * (V * R)^n
-  outColor.r += light.intensity.r * specularReflectionCoefficient.r * specularFactor;
-  outColor.g += light.intensity.g * specularReflectionCoefficient.g * specularFactor;
-  outColor.b += light.intensity.b * specularReflectionCoefficient.b * specularFactor;
+  outColor.r += light.intensity.r * k_s.r * specularFactor;
+  outColor.g += light.intensity.g * k_s.g * specularFactor;
+  outColor.b += light.intensity.b * k_s.b * specularFactor;
 
   // Beurteilung: Es erscheint ein heller Glanzpunkt auf der Kugel. Je nach dem wie man die Shininess einstellt, wird diese schärfer oder weicher.
   }
